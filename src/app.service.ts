@@ -99,7 +99,7 @@ export class AppService implements OnModuleInit {
   async refreshClients() {
     console.log("Refreshing clients")
     try {
-      const response = await axios.get(`${uptimechecker}/clients/masked`);
+      const response = await axios.get(`${uptimechecker}/maskedcls`);
       Checker.setClients(response.data)
     } catch (error) {
       parseError(error)
