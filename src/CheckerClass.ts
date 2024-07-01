@@ -63,7 +63,7 @@ export class Checker {
                 return false;
             }
         } catch (error) {
-            console.log("Some Error here: ", error.code);
+            parseError(error, "Some Error here:")
         }
     }
 
