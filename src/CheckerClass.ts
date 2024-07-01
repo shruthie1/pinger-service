@@ -78,11 +78,11 @@ export class Checker {
         }
     }
 
-    async requestCall(username: string, chatId: string, type: string): Promise<void> {
-        const user = this.clientsMap.get(username.toLowerCase());
-        console.log(`Call Request Received: ${username} | ${chatId}`);
-        if (user) {
-            const payload = { chatId, profile: user.clientId, type };
+    async requestCall(clientId: string, chatId: string, type: string): Promise<void> {
+        const client = this.clientsMap.get(clientId);
+        console.log(`Call Request Received: ${clientId} | ${chatId}`);
+        if (client) {
+            const payload = { chatId, profile: client.clientId, type };
             const options = {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
