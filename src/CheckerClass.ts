@@ -72,15 +72,15 @@ export class Checker {
         if (client) {
             this.clientsMap.set(clientId, { ...client, downTime: 0, lastPingTime: Date.now() });
             this.pings[clientId] = Date.now();
-            console.log(new Date(Date.now()).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }), clientId, 'Ping!! Received!!');
+            // console.log(new Date(Date.now()).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }), clientId, 'Ping!! Received!!');
         } else {
-            console.log(new Date(Date.now()).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }), `User ${clientId} Not exist`);
+            console.log(new Date(Date.now()).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }), `Client ${clientId} Not exist`);
         }
     }
 
     async requestCall(clientId: string, chatId: string, type: string): Promise<void> {
         const client = this.clientsMap.get(clientId);
-        console.log(`Call Request Received: ${clientId} | ${chatId}`);
+        // console.log(`Call Request Received: ${clientId} | ${chatId}`);
         if (client) {
             const payload = { chatId, profile: client.clientId, type };
             const options = {
