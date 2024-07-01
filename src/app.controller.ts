@@ -42,6 +42,13 @@ export class AppController {
   async requestCall(@Query('clientId') clientId: string, @Query('chatId') chatId: string, @Query('type') type: string): Promise<void> {
     return await this.appService.requestCall(clientId, chatId, type);
   }
+  
+  @Get('/getallupiIds')
+  @ApiOperation({ summary: 'Get all UpiIDs' })
+  @ApiResponse({ status: 200, description: 'All upi Ids retrieved successfully.' })
+  async getallupiIds() {
+    return await this.appService.getallupiIds();
+  }
 
   @Get('forward/*')
   async forwardRequest(@Query('host') host: string, @Req() req: Request, @Res() res: Response) {

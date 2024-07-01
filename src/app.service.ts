@@ -135,9 +135,18 @@ export class AppService implements OnModuleInit {
     return 'Hello World!';
   }
 
-  async forward(url: string){
+  async getallupiIds() {
     try {
-      const response = await axios.get(url, { timeout : 55000});
+      const response = await axios.get(`${uptimechecker}/upi-ids`);
+      return response.data
+    } catch (error) {
+      parseError(error)
+    }
+  }
+
+  async forward(url: string) {
+    try {
+      const response = await axios.get(url, { timeout: 55000 });
       return response;
     } catch (error) {
       throw new InternalServerErrorException(parseError(error).message)
