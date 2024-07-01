@@ -141,7 +141,7 @@ export class Checker {
                         }, 35000);
                     }, 35000);
                 } catch (error) {
-                    console.log("Some Error at coneect: ", error.code)
+                    parseError(error, "Error at connect ::")
                 }
                 await sleep(5000);
             }
