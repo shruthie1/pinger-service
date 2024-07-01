@@ -51,19 +51,23 @@ export class Checker {
 
     async getClientOff(clientId: string, processId: string): Promise<boolean> {
         const client = this.clientsMap.get(clientId);
-        try {
-            const connectResp = await fetchWithTimeout(`${client.repl}/getprocessid`, { timeout: 10000 });
-            if (connectResp.data.ProcessId === processId) {
-                this.clientsMap.set(clientId, { ...client, downTime: 0, lastPingTime: Date.now() });
-                this.pushToconnectionQueue(clientId, processId);
-                return true;
-            } else {
-                console.log(`Actual Process Id from ${client.repl}/getprocessid :: `, connectResp.data.ProcessId);
-                console.log("Request received from Unknown process");
-                return false;
+        if (client) {
+            try {
+                const connectResp = await fetchWithTimeout(`${client.repl}/getprocessid`, { timeout: 10000 });
+                if (connectResp.data.ProcessId === processId) {
+                    this.clientsMap.set(clientId, { ...client, downTime: 0, lastPingTime: Date.now() });
+                    this.pushToconnectionQueue(clientId, processId);
+                    return true;
+                } else {
+                    console.log(`Actual Process Id from ${client.repl}/getprocessid :: `, connectResp.data.ProcessId);
+                    console.log("Request received from Unknown process");
+                    return false;
+                }
+            } catch (error) {
+                parseError(error, "Some Error here:")
             }
-        } catch (error) {
-            parseError(error, "Some Error here:")
+        } else {
+            console.log(new Date(Date.now()).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }), `Client ${clientId} Not exist`);
         }
     }
 
@@ -91,16 +95,16 @@ export class Checker {
             const result = await fetchWithTimeout("https://arpithared.onrender.com/events/schedule", options, 3);
             console.log("eventsResponse:", result?.data);
         } else {
-            console.log("User not exist!!");
+            console.log(new Date(Date.now()).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }), `Client ${clientId} Not exist`);
         }
     }
 
-    async pushToconnectionQueue(username, processId) {
-        const existingIndex = this.connetionQueue.findIndex(entry => entry.username === username);
+    async pushToconnectionQueue(clientId: string, processId: string) {
+        const existingIndex = this.connetionQueue.findIndex(entry => entry.clientId === clientId);
         if (existingIndex !== -1) {
             this.connetionQueue[existingIndex].processId = processId;
         } else {
-            this.connetionQueue.push({ username, processId });
+            this.connetionQueue.push({ clientId, processId });
         }
     }
 
