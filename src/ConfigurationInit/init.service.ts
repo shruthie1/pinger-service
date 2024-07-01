@@ -20,7 +20,9 @@ export class ConfigurationService implements OnModuleInit {
         const data = await this.findOne()
         for (const key in data) {
             console.log('setting', key)
-            process.env[key] = data[key];
+            if (key !== "PORT") {
+                process.env[key] = data[key];
+            }
         }
         console.log("finished setting env");
     }
