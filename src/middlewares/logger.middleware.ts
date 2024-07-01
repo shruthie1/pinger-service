@@ -17,13 +17,13 @@ export class LoggerMiddleware implements NestMiddleware {
                 const { statusCode } = res;
                 const contentLength = res.get('content-length');
                 if (statusCode >= 500) {
-                    this.logger.error(`${method} ${originalUrl} || StatusCode : ${statusCode}`);
+                    this.logger.error(`${method} ${originalUrl}....${statusCode}`);
                 } else if (statusCode >= 400) {
-                    this.logger.warn(`${method} ${originalUrl} || StatusCode : ${statusCode}`);
+                    this.logger.warn(`${method} ${originalUrl}....${statusCode}`);
                 } else if (statusCode >= 300) {
-                    this.logger.verbose(`${method} ${originalUrl} || StatusCode : ${statusCode}`);
+                    this.logger.verbose(`${method} ${originalUrl}....${statusCode}`);
                 } else {
-                    this.logger.log(`${method} ${originalUrl} || StatusCode : ${statusCode}`);
+                    this.logger.log(`${method} ${originalUrl}....${statusCode}`);
                 }
             });
         } else {
