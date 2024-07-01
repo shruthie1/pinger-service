@@ -225,9 +225,11 @@ export class Checker {
             console.log(new Date(Date.now()).toLocaleString('en-IN', this.timeOptions), url, ` NOT Reachable`);
             await fetchWithTimeout(`${ppplbot()}&text=${url}  NOT Reachable`);
             try {
-                const resp = await axios.get(`${deployKey ? deployKey : `${url}/exit`}`, { timeout: 55000 });
-                if (resp?.status == 200 || resp.status == 201) {
-                    await fetchWithTimeout(`${ppplbot()}&text=Restarted ${url}`);
+                if (deployKey) {
+                    const resp = await axios.get(`${deployKey ? deployKey : `${url}/exit`}`, { timeout: 55000 });
+                    if (resp?.status == 200 || resp.status == 201) {
+                        await fetchWithTimeout(`${ppplbot()}&text=Restarted ${url}`);
+                    }
                 }
             } catch (error) {
                 console.log(`Cannot restart ${url} server`);
