@@ -21,6 +21,10 @@ export class AppController {
     return this.appService.refreshClients();
   }
 
+  @Get("exit")
+  exit(): string {
+    process.exit(1)
+  }
 
   @Get('/tgclientoff/:processId')
   @ApiOperation({ summary: 'Get client off by process ID' })
@@ -42,7 +46,7 @@ export class AppController {
   async requestCall(@Query('clientId') clientId: string, @Query('chatId') chatId: string, @Query('type') type: string): Promise<void> {
     return await this.appService.requestCall(clientId, chatId, type);
   }
-  
+
   @Get('/getallupiIds')
   @ApiOperation({ summary: 'Get all UpiIDs' })
   @ApiResponse({ status: 200, description: 'All upi Ids retrieved successfully.' })
