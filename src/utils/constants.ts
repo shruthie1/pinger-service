@@ -1,0 +1,1 @@
+export const uptimechecker = 'https://uptimechecker2.onrender.com'
