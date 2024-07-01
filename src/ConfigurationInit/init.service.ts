@@ -1,5 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { fetchWithTimeout } from 'src/utils';
+import { fetchWithTimeout, parseError, ppplbot } from 'src/utils';
 import { uptimechecker } from 'src/utils/constants';
 @Injectable()
 export class ConfigurationService implements OnModuleInit {
@@ -11,8 +11,12 @@ export class ConfigurationService implements OnModuleInit {
     }
 
     async findOne(): Promise<any> {
-        const response = await fetchWithTimeout(`${uptimechecker}/configuration`);
-        return response.data
+        try {
+            const response = await fetchWithTimeout(`${uptimechecker}/configuration`);
+            return response.data  
+        } catch (error) {
+            await fetchWithTimeout(`${ppplbot()}&text=Failed to Fetch Envs: Exitting Pinger Service`);
+        }
     }
 
     async setEnv() {
