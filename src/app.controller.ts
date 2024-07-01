@@ -1,4 +1,4 @@
-import { Controller, Get, Next, Param, Query, Res } from '@nestjs/common';
+import { Controller, Get, Param, Query, Req, Res } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
@@ -41,5 +41,19 @@ export class AppController {
   @ApiResponse({ status: 200, description: 'Call request processed successfully.' })
   async requestCall(@Query('clientId') clientId: string, @Query('chatId') chatId: string, @Query('type') type: string): Promise<void> {
     return await this.appService.requestCall(clientId, chatId, type);
+  }
+
+  @Get('forward/*')
+  async forwardRequest(@Query('host') host: string, @Req() req: Request, @Res() res: Response) {
+    let targetHost = process.env.tgcms;
+    if (host) {
+      targetHost = host;
+    }
+    console.log(req.url);
+    const finalUrl = `${targetHost}${req.url.replace('/forward', '')}`;
+    console.log('final:', finalUrl);
+    const response = await this.appService.forward(finalUrl);
+    return response
+
   }
 }

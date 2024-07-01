@@ -1,7 +1,7 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, OnModuleInit } from '@nestjs/common';
 import axios from 'axios'
 import { uptimechecker } from './utils/constants';
-import { fetchWithTimeout, parseError, ppplbot, sleep } from './utils';
+import { fetchWithTimeout, parseError, sleep } from './utils';
 import { Checker } from './CheckerClass';
 import * as schedule from 'node-schedule-tz';
 console.log("In App Service")
@@ -133,5 +133,14 @@ export class AppService implements OnModuleInit {
   }
   getHello(): string {
     return 'Hello World!';
+  }
+
+  async forward(url: string){
+    try {
+      const response = await axios.get(url, { timeout : 55000});
+      return response;
+    } catch (error) {
+      throw new InternalServerErrorException(parseError(error).message)
+    }
   }
 }
