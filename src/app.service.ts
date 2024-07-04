@@ -34,6 +34,7 @@ export class AppService implements OnModuleInit {
       // })
 
       schedule.scheduleJob('test2', '*/10 * * * *', 'Asia/Kolkata', async () => {
+        await this.refreshClients();
         const clients = Array.from(Checker.getinstance().clientsMap.values());
         for (const client of clients) {
           await fetchWithTimeout(`${client.repl}/markasread`);
@@ -63,21 +64,6 @@ export class AppService implements OnModuleInit {
           }, 300000);
           await sleep(1000)
         }
-        // const now = new Date();
-        // if (now.getUTCDate() % 5 === 1) {
-        //   setTimeout(async () => {
-        //     await db.resetAvailableMsgs();
-        //     await db.updateBannedChannels();
-        //     await db.updateDefaultReactions();
-        //   }, 30000);
-        // }
-
-        // await fetchWithTimeout(`${ppplbot()}&text=${encodeURIComponent(await getPromotionStatsPlain())}`);
-        // await db.resetPaidUsers();
-        // await db.updateActiveChannels();
-        // await db.clearStats2();
-        // await db.clearAllStats();
-        // await db.reinitPromoteStats();
 
         try {
           await fetchWithTimeout(`https://mychatgpt-pg6w.onrender.com/getstats`, { timeout: 55000 });
