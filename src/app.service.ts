@@ -123,10 +123,11 @@ export class AppService implements OnModuleInit {
   }
 
   async getallupiIds() {
-    return this.upiIds;
+    return await this.upiIds;
   }
 
   async refreshUpiIds() {
+    console.log("Refreshing Upi Ids")
     try {
       const response = await axios.get(`${uptimechecker}/upi-ids`);
       this.upiIds = response.data
