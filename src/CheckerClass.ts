@@ -47,7 +47,6 @@ export class Checker {
         for (const client of clients) {
             this.instance.clientsMap.set(client.clientId, client)
         }
-        await fetchWithTimeout(`${ppplbot()}&text=Refreshed Map :: PingerService`);
     }
 
     async getClientOff(clientId: string, processId: string): Promise<boolean> {

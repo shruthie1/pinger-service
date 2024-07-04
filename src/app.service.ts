@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException, OnModuleInit } from '@nestjs/common';
 import axios from 'axios'
 import { uptimechecker } from './utils/constants';
-import { fetchWithTimeout, parseError, sleep } from './utils';
+import { fetchWithTimeout, parseError, ppplbot, sleep } from './utils';
 import { Checker } from './CheckerClass';
 import * as schedule from 'node-schedule-tz';
 console.log("In App Service")
@@ -77,11 +77,12 @@ export class AppService implements OnModuleInit {
     } catch (error) {
       parseError(error, "Some Error During Daily cleanup")
     }
-    console.log("Added All Cron Jobs")
+    console.log("Added All Cron Jobs");
   }
   async onModuleInit() {
     await this.refreshClients()
     await this.refreshUpiIds();
+    await fetchWithTimeout(`${ppplbot()}&text=Refreshed Map :: PingerService`);
   }
 
   async refreshClients() {
