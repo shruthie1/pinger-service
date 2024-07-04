@@ -81,6 +81,7 @@ export class AppService implements OnModuleInit {
   }
   async onModuleInit() {
     await this.refreshClients()
+    await this.refreshUpiIds();
   }
 
   async refreshClients() {
