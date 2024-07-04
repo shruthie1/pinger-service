@@ -8,8 +8,8 @@ console.log("In App Service")
 
 @Injectable()
 export class AppService implements OnModuleInit {
+  private upiIds;
   constructor() {
-
     try {
       schedule.scheduleJob('test', ' 0 * * * * ', 'Asia/Kolkata', async () => {
         console.log("Promoting.....");
@@ -35,6 +35,7 @@ export class AppService implements OnModuleInit {
 
       schedule.scheduleJob('test2', '*/10 * * * *', 'Asia/Kolkata', async () => {
         await this.refreshClients();
+        await this.refreshUpiIds();
         const clients = Array.from(Checker.getinstance().clientsMap.values());
         for (const client of clients) {
           await fetchWithTimeout(`${client.repl}/markasread`);
@@ -122,8 +123,13 @@ export class AppService implements OnModuleInit {
   }
 
   async getallupiIds() {
+    return this.upiIds;
+  }
+
+  async refreshUpiIds() {
     try {
       const response = await axios.get(`${uptimechecker}/upi-ids`);
+      this.upiIds = response.data
       return response.data
     } catch (error) {
       parseError(error)
