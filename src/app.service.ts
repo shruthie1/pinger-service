@@ -52,7 +52,7 @@ export class AppService implements OnModuleInit {
 
       })
 
-      schedule.scheduleJob('test3', ' 25 0 * * * ', 'Asia/Kolkata', async () => {
+      schedule.scheduleJob('test3', ' 24 0 * * * ', 'Asia/Kolkata', async () => {
         const clients = Array.from(Checker.getinstance().clientsMap.values());
         for (const client of clients) {
           await sleep(1000);
