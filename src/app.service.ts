@@ -77,7 +77,7 @@ export class AppService implements OnModuleInit {
     } catch (error) {
       parseError(error, "Some Error During Daily cleanup")
     }
-
+    console.log("Added All Cron Jobs")
   }
   async onModuleInit() {
     await this.refreshClients()
