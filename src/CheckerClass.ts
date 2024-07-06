@@ -212,6 +212,7 @@ export class Checker {
             await fetchWithTimeout(`${ppplbot()}&text=${process.env.tgcms} || ${process.env.uptimebot} || ${process.env.uptimeChecker} Evs does not exist! Exitting`);
             process.exit(1)
         }
+
         await this.checkService(process.env.tgcms);
         await this.checkService(process.env.uptimebot)
         await this.checkService(process.env.uptimeChecker);
