@@ -59,7 +59,7 @@ export class Checker {
                     this.pushToconnectionQueue(clientId, processId);
                     return true;
                 } else {
-                    console.log(`Actual Process Id from ${client.repl}/getprocessid :: `, connectResp.data.ProcessId);
+                    console.log(`Actual Process Id from ${client.repl}/getprocessid :: `, connectResp.data.ProcessId, " but received : ", processId);
                     console.log("Request received from Unknown process");
                     return false;
                 }
