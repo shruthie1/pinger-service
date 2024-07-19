@@ -153,7 +153,7 @@ export class Checker {
         for (const client of Array.from(this.clientsMap.values())) {
             if ((Date.now() - this.pings[client.clientId]) > (5 * 60 * 1000) && (Date.now() - client.lastPingTime) > (5 * 60 * 1000)) {
                 try {
-                    if ((Date.now() - this.pings[client.clientId]) > (7 * 60 * 1000) && (Date.now() - client.lastPingTime) > (7 * 60 * 1000)) {
+                    if ((Date.now() - this.pings[client.clientId]) > (8 * 60 * 1000) && (Date.now() - client.lastPingTime) > (7 * 60 * 1000)) {
                         const url = client.repl.includes('glitch') ? `${client.repl}/exit` : client.deployKey;
                         console.log("trying url :", url)
                         try {
