@@ -1,1 +1,1 @@
-export const uptimechecker = 'https://uptimechecker2.onrender.com'
+export const uptimechecker = 'https://uptimechecker2.glitch.me'
