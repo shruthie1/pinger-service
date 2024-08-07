@@ -1,6 +1,6 @@
 import { Controller, Get, Param, Query, Req, Res } from '@nestjs/common';
 import { AppService } from './app.service';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
@@ -43,7 +43,10 @@ export class AppController {
   @Get('/requestcall')
   @ApiOperation({ summary: 'Request call' })
   @ApiResponse({ status: 200, description: 'Call request processed successfully.' })
-  async requestCall(@Query('clientId') clientId: string, @Query('chatId') chatId: string, @Query('type') type: string): Promise<void> {
+  @ApiQuery({ name: 'clientId', required: true })
+  @ApiQuery({ name: 'chatId', required: true })
+  @ApiQuery({ name: 'type', required: false })
+  async requestCall(@Query('clientId') clientId: string, @Query('chatId') chatId: string, @Query('type') type?: string): Promise<void> {
     return await this.appService.requestCall(clientId, chatId, type);
   }
 
