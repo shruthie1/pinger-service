@@ -143,6 +143,7 @@ export class AppService implements OnModuleInit {
       const response = await axios.get(url, { timeout: 55000 });
       return response;
     } catch (error) {
+      parseError(error, `Issue with ${url}`)
       throw new InternalServerErrorException(parseError(error).message)
     }
   }
