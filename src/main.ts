@@ -16,6 +16,10 @@ async function bootstrap() {
     allowedHeaders: "*",
     origin: "*"
   });
+  app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store');
+    next();
+  });
   app.useGlobalPipes(new ValidationPipe({
     transform: true,
   }));
