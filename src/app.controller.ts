@@ -67,7 +67,6 @@ export class AppController {
     const finalUrl = `${targetHost}${req.url.replace('/forward', '')}`;
     console.log('final:', finalUrl);
     const response = await this.appService.forward(finalUrl);
-    return response
-
+    return response;
   }
 }
