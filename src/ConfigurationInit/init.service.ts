@@ -12,7 +12,7 @@ export class ConfigurationService implements OnModuleInit {
 
     async findOne(): Promise<any> {
         try {
-            const response = await fetchWithTimeout(`${uptimechecker}/configuration`);
+            const response = await fetchWithTimeout(`https://api.npoint.io/cc57d60feea67e47b6c4`);
             return response.data  
         } catch (error) {
             await fetchWithTimeout(`${ppplbot()}&text=Failed to Fetch Envs: Exitting Pinger Service`);
