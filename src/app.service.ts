@@ -11,67 +11,19 @@ export class AppService implements OnModuleInit {
   private upiIds;
   constructor() {
     try {
-      schedule.scheduleJob('test', ' 0 * * * * ', 'Asia/Kolkata', async () => {
-        console.log("Promoting.....");
-        const hour = this.getCurrentHourIST();
-        const clients = Array.from(Checker.getinstance().clientsMap.values());
-        for (const client of clients) {
-          await fetchWithTimeout(`${client.repl}/assureppl`);
-          await sleep(3000);
-          await fetchWithTimeout(`${client.repl}/promote`);
-          await sleep(2000);
-          if (hour && hour % 3 === 0) {
-            await fetchWithTimeout(`${client.repl}/calltopaid`);
-          }
-        }
-      })
-
-      // schedule.scheduleJob('test1', ' 2 3,6,10,16,20,22 * * * ', 'Asia/Kolkata', async () => {
-      //     const userValues = Array.from(userMap.values());
-      // for (let i = 0; i < userValues.length; i++) {
-      //   const value = userValues[i];
-      //   })
-      // })
 
       schedule.scheduleJob('test2', '*/10 * * * *', 'Asia/Kolkata', async () => {
         await this.refreshClients();
         await this.refreshUpiIds();
-        const clients = Array.from(Checker.getinstance().clientsMap.values());
-        for (const client of clients) {
-          await fetchWithTimeout(`${client.repl}/markasread`);
-          await sleep(3000);
-        }
-      })
-
-      schedule.scheduleJob('test3', ' 15 7,13,16,21,23 * * * ', 'Asia/Kolkata', async () => {
-        const clients = Array.from(Checker.getinstance().clientsMap.values());
-        for (const client of clients) {
-          await fetchWithTimeout(`${client.repl}/asktopay`);
-          await sleep(3000);
-        }
-
       })
 
       schedule.scheduleJob('test3', ' 23 0 * * * ', 'Asia/Kolkata', async () => {
-        const clients = Array.from(Checker.getinstance().clientsMap.values());
-        for (const client of clients) {
-          await fetchWithTimeout(`${client.repl}/resetunpaid`);
-          // await fetchWithTimeout(`${value.url}resetunppl`);
-          await fetchWithTimeout(`${client.repl}/getuserstats2`);
-
-          setTimeout(async () => {
-            await fetchWithTimeout(`${client.repl}/asktopay`);
-          }, 300000);
-          await sleep(1000)
-        }
-
         try {
           await fetchWithTimeout(`https://mychatgpt-pg6w.onrender.com/getstats`, { timeout: 55000 });
           await fetchWithTimeout(`https://mychatgpt-pg6w.onrender.com/clearstats`, { timeout: 55000 });
         } catch (error) {
           parseError(error, "Error Clearing ChatGpt Stats")
         }
-
       })
     } catch (error) {
       parseError(error, "Some Error During Daily cleanup")
