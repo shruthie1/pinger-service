@@ -1,9 +1,11 @@
 import { Injectable, InternalServerErrorException, OnModuleInit } from '@nestjs/common';
 import axios from 'axios'
 import { uptimechecker } from './utils/constants';
-import { fetchWithTimeout, parseError, ppplbot, sleep } from './utils';
 import { Checker } from './CheckerClass';
 import * as schedule from 'node-schedule-tz';
+import { fetchWithTimeout } from './utils/fetchWithTimeout';
+import { ppplbot } from './utils/logbots';
+import { parseError } from './utils/parseError';
 console.log("In App Service")
 
 @Injectable()
@@ -92,8 +94,9 @@ export class AppService implements OnModuleInit {
 
   async forward(url: string) {
     try {
-      const response = await axios.get(url, { timeout: 55000 });
-      return response;
+      const response = await fetchWithTimeout(url);
+      console.log(response.data)
+      return response?.data
     } catch (error) {
       parseError(error, `Issue with ${url}`)
       throw new InternalServerErrorException(parseError(error).message)

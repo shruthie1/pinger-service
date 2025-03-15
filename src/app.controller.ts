@@ -1,4 +1,5 @@
 import { Controller, Get, Param, Query, Req, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { AppService } from './app.service';
 import { ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 
@@ -59,14 +60,22 @@ export class AppController {
 
   @Get('forward/*')
   async forwardRequest(@Query('host') host: string, @Req() req: Request, @Res() res: Response) {
-    let targetHost = process.env.tgcms;
-    if (host) {
-      targetHost = host;
+    try {
+      let targetHost = process.env.tgcms;
+      if (host) {
+        targetHost = host;
+      }
+      console.log(req.url);
+      const finalUrl = `${targetHost}${req.url.replace('/forward', '')}`;
+      console.log('final:', finalUrl);
+      const result = await this.appService.forward(finalUrl);
+      res.send(result);
+    } catch (error) {
+      console.error('Forward request failed:', error);
+      res.status(500).send({
+        error: 'Failed to forward request',
+        message: error.message
+      });
     }
-    console.log(req.url);
-    const finalUrl = `${targetHost}${req.url.replace('/forward', '')}`;
-    console.log('final:', finalUrl);
-    const response = await this.appService.forward(finalUrl);
-    return response;
   }
 }

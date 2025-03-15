@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { fetchWithTimeout, parseError, ppplbot } from 'src/utils';
-import { uptimechecker } from 'src/utils/constants';
+import { fetchWithTimeout } from 'src/utils/fetchWithTimeout';
+import { ppplbot } from 'src/utils/logbots';
 @Injectable()
 export class ConfigurationService implements OnModuleInit {
     constructor() {

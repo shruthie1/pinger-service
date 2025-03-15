@@ -1,5 +1,8 @@
 import axios from "axios";
-import { fetchWithTimeout, parseError, ppplbot, sleep } from "./utils";
+import { sleep } from "./utils";
+import { fetchWithTimeout } from "./utils/fetchWithTimeout";
+import { ppplbot } from "./utils/logbots";
+import { parseError } from "./utils/parseError";
 console.log("IN Checker Class")
 interface IClient {
     "channelLink": string;
