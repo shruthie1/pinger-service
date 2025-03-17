@@ -209,7 +209,7 @@ export class Checker {
             //         console.log("Some Error: ", parseError(error), error.code);
             //     }
             // }
-            await sleep(5000)
+            await sleep(10000)
         }
         if (!process.env.tgcms || !process.env.uptimebot || !process.env.uptimeChecker) {
             await fetchWithTimeout(`${ppplbot()}&text=${process.env.tgcms} || ${process.env.uptimebot} || ${process.env.uptimeChecker} Evs does not exist! Exitting`);
