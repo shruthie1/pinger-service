@@ -24,7 +24,7 @@ interface IClient {
 }
 
 export class Checker {
-    static instance = undefined;
+    static instance: Checker;
     clientsMap: Map<string, IClient> = new Map();
     pings = {};
     connetionQueue = [];
