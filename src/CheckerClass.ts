@@ -4,6 +4,8 @@ import { fetchWithTimeout } from "./utils/fetchWithTimeout";
 import { ppplbot } from "./utils/logbots";
 import { parseError } from "./utils/parseError";
 console.log("IN Checker Class")
+export const prcessID = Math.floor(Math.random() * 1234);
+
 interface IClient {
     "channelLink": string;
     "dbcoll": string,
@@ -118,7 +120,7 @@ export class Checker {
             this.count = this.count + 1
             this.connectToNewClients();
             if (this.count % 12 == 1) {
-                console.log(`-------------------------------------------------------------`)
+                console.log(`------------------------checkingPings: ${prcessID}-------------------------------------`)
                 await this.checkPings()
             }
         }, 30000)
