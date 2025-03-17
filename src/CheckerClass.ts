@@ -179,6 +179,7 @@ export class Checker {
                 this.clientsMap.set(client.clientId, { ...client, downTime: 0 });
                 // console.log("Pinged :: ", client.repl)
             } catch (e) {
+                parseError(e, "Error while pinging", false);
                 console.log(new Date(Date.now()).toLocaleString('en-IN', this.timeOptions), client.repl, ` NOT Reachable - ${client.downTime}`);
                 this.clientsMap.set(client.clientId, { ...client, downTime: client.downTime + 1 })
                 if (client.downTime > 5) {
