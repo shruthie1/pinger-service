@@ -13,12 +13,6 @@ export class AppService implements OnModuleInit {
   private upiIds;
   constructor() {
     try {
-
-      schedule.scheduleJob('test2', '*/10 * * * *', 'Asia/Kolkata', async () => {
-        await this.refreshClients();
-        await this.refreshUpiIds();
-      })
-
       schedule.scheduleJob('test3', ' 23 0 * * * ', 'Asia/Kolkata', async () => {
         try {
           await fetchWithTimeout(`https://mychatgpt-pg6w.onrender.com/getstats`, { timeout: 55000 });
@@ -31,7 +25,12 @@ export class AppService implements OnModuleInit {
       parseError(error, "Some Error During Daily cleanup")
     }
     setInterval(async () => {
-      await this.refreshClients();
+      try {
+        await this.refreshClients();
+        await this.refreshUpiIds();
+      } catch (error) {
+        parseError(error, "Error in Refreshing Clients")
+      }
     }, 1000 * 60 * 5);
     console.log("Added All Cron Jobs");
   }
@@ -47,7 +46,7 @@ export class AppService implements OnModuleInit {
       const response = await axios.get('https://api.npoint.io/f0d1e44d82893490bbde');
       await Checker.setClients(response.data)
     } catch (error) {
-      parseError(error)
+      parseError(error, "Error while refreshing Clients")
     }
   }
 
@@ -87,11 +86,11 @@ export class AppService implements OnModuleInit {
   async refreshUpiIds() {
     console.log("Refreshing Upi Ids")
     try {
-      const response = await axios.get(`${uptimechecker}/upi-ids`);
+      const response = await axios.get(`https://api.npoint.io/54baf762fd873c55c6b1`);
       this.upiIds = response.data
       return response.data
     } catch (error) {
-      parseError(error)
+      parseError(error, "Error while refreshing Upi Ids")
     }
   }
 
