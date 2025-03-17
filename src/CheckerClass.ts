@@ -137,12 +137,8 @@ export class Checker {
                 try {
                     const client = this.clientsMap.get(clientId);
                     await fetchWithTimeout(`${client.repl}/tryToConnect/${processId}`, { timeout: 10000 });
-                    setTimeout(async () => {
-                        await fetchWithTimeout(`${client.repl}/promote`);
-                        setTimeout(async () => {
-                            await fetchWithTimeout(`${client.repl}/markasread`);
-                        }, 35000);
-                    }, 35000);
+                    await sleep(3000);
+                    console.log('Connected - ', clientId);
                 } catch (error) {
                     parseError(error, "Error at connect ::")
                 }
