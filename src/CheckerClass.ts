@@ -48,7 +48,7 @@ export class Checker {
     static async setClients(clients: object) {
         Checker.getinstance();
         for (const clientId in clients) {
-            this.instance.clientsMap.set(clientId, clients[clientId]);
+            this.instance.clientsMap.set(clientId, { ...clients[clientId], downTime: 0, lastPingTime: Date.now() });
         }
         console.log("Clients have been set successfully.");
     }
