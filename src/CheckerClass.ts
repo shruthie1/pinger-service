@@ -185,7 +185,8 @@ export class Checker {
                 if (client.downTime > 5) {
                     this.clientsMap.set(client.clientId, { ...client, downTime: -5 })
                     try {
-                        const resp = await fetchWithTimeout(`${client.deployKey}`, { timeout: 120000 });
+                        const url = client.repl.includes('glitch') ? `${client.repl}/exit` : client.deployKey;
+                        const resp = await fetchWithTimeout(url, { timeout: 120000 });
                         if (resp?.status == 200 || resp.status == 201) {
                             await fetchWithTimeout(`${ppplbot()}&text=Restarted ${client.clientId}`);
                         } else {
