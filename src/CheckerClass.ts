@@ -45,11 +45,13 @@ export class Checker {
         return Checker.instance;
     }
 
-    static async setClients(clients: any[]) {
+    static async setClients(clients: object) {
         Checker.getinstance();
-        for (const client of clients) {
-            this.instance.clientsMap.set(client.clientId, client)
+        console.log(clients)
+        for (const clientId in clients) {
+            this.instance.clientsMap.set(clientId, clients[clientId]);
         }
+        console.log("Clients have been set successfully.");
     }
 
     async getClientOff(clientId: string, processId: string): Promise<boolean> {
