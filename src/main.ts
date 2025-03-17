@@ -2,6 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { fetchWithTimeout } from './utils/fetchWithTimeout';
+import { notifbot } from './utils/logbots';
+import { parseError } from './utils/parseError';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -69,3 +72,14 @@ async function bootstrap() {
   await app.listen(process.env.PORT || 9000);
 }
 bootstrap();
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.log('Unhandled Rejection at:', promise, 'reason:', reason);
+  // Application specific logging, throwing an error, or other logic here
+  fetchWithTimeout(`${notifbot()}&text=Unhandled Promise Rejection ${JSON.stringify(reason)}`);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  parseError(error, "Uncaught Exception")
+});
