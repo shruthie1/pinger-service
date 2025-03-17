@@ -1,7 +1,7 @@
 import axios from "axios";
 import { sleep } from "./utils";
 import { fetchWithTimeout } from "./utils/fetchWithTimeout";
-import { ppplbot } from "./utils/logbots";
+import { notifbot, ppplbot } from "./utils/logbots";
 import { parseError } from "./utils/parseError";
 console.log("IN Checker Class")
 export const prcessID = Math.floor(Math.random() * 1234);
@@ -37,6 +37,7 @@ export class Checker {
 
     constructor() {
         this.main();
+        fetchWithTimeout(`${notifbot()}&text=pingerService Started`);
     };
 
     static getinstance(): Checker {
