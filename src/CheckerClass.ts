@@ -51,7 +51,13 @@ export class Checker {
     static async setClients(clients: object) {
         Checker.getinstance();
         for (const clientId in clients) {
-            this.instance.clientsMap.set(clientId, { ...clients[clientId], downTime: 0, lastPingTime: Date.now() });
+            const existingData = this.instance.clientsMap.get(clientId)
+            if (existingData) {
+                this.instance.clientsMap.set(clientId, { ...existingData, ...clients[clientId] });
+                console.log(`Client ${clientId} already exists in clientsMap.`);
+            } else {
+                this.instance.clientsMap.set(clientId, { ...clients[clientId], downTime: 0, lastPingTime: Date.now() });
+            }
         }
         console.log("Clients have been set successfully.");
     }
@@ -121,12 +127,10 @@ export class Checker {
             this.count = this.count + 1
             this.connectToNewClients();
             if (this.count % 12 == 1) {
-                console.log(`------------------------checkingPings: ${prcessID} :: ${this.count}-------------------------------------`)
                 await this.checkPings()
             }
         }, 30000)
     }
-
 
     async connectToNewClients() {
         if (this.connetionQueue.length > 0 && !this.startedConnecting) {
@@ -152,6 +156,7 @@ export class Checker {
     }
 
     async checkPings() {
+        console.log(`------------------------checkingPings: ${prcessID} :: ${this.count} :: ${this.clientsMap.size} -------------------------------------`)
         for (const client of Array.from(this.clientsMap.values())) {
             if ((Date.now() - this.pings[client.clientId]) > (5 * 60 * 1000) && (Date.now() - client.lastPingTime) > (5 * 60 * 1000)) {
                 try {
