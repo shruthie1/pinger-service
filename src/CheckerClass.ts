@@ -47,7 +47,6 @@ export class Checker {
 
     static async setClients(clients: object) {
         Checker.getinstance();
-        console.log(clients)
         for (const clientId in clients) {
             this.instance.clientsMap.set(clientId, clients[clientId]);
         }
