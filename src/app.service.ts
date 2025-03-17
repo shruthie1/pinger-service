@@ -30,6 +30,9 @@ export class AppService implements OnModuleInit {
     } catch (error) {
       parseError(error, "Some Error During Daily cleanup")
     }
+    setInterval(async () => {
+      await this.refreshClients();
+    }, 1000 * 60 * 5);
     console.log("Added All Cron Jobs");
   }
   async onModuleInit() {
