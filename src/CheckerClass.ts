@@ -151,7 +151,6 @@ export class Checker {
     }
 
     async checkPings() {
-        console.log("Checking Pings")
         for (const client of Array.from(this.clientsMap.values())) {
             if ((Date.now() - this.pings[client.clientId]) > (5 * 60 * 1000) && (Date.now() - client.lastPingTime) > (5 * 60 * 1000)) {
                 try {
@@ -179,7 +178,7 @@ export class Checker {
             try {
                 await axios.get(`${client.repl}`, { timeout: 120000 });
                 this.clientsMap.set(client.clientId, { ...client, downTime: 0 });
-                // console.log("Pinged :: ", client.repl)
+                console.log("Pinged :: ", client.repl)
             } catch (e) {
                 parseError(e, "Error while pinging", false);
                 console.log(new Date(Date.now()).toLocaleString('en-IN', this.timeOptions), client.repl, ` NOT Reachable - ${client.downTime}`);
