@@ -41,7 +41,7 @@ export class AppService implements OnModuleInit {
   async refreshClients() {
     console.log("Refreshing clients")
     try {
-      const response = await axios.get(`${uptimechecker}/maskedcls`);
+      const response = await axios.get('https://api.npoint.io/f0d1e44d82893490bbde');
       await Checker.setClients(response.data)
     } catch (error) {
       parseError(error)
