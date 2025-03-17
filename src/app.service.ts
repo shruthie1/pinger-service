@@ -7,7 +7,7 @@ import { fetchWithTimeout } from './utils/fetchWithTimeout';
 import { ppplbot } from './utils/logbots';
 import { parseError } from './utils/parseError';
 console.log("In App Service")
-
+let canExit = Date.now();
 @Injectable()
 export class AppService implements OnModuleInit {
   private upiIds;
@@ -26,6 +26,10 @@ export class AppService implements OnModuleInit {
     }
     setInterval(async () => {
       try {
+        if (canExit < Date.now() - 1000 * 60 * 15) {
+          console.log("Exiting due to inactivity")
+          process.exit(1);
+        }
         await this.refreshClients();
         await this.refreshUpiIds();
       } catch (error) {
@@ -76,6 +80,7 @@ export class AppService implements OnModuleInit {
     return istHour;
   }
   getHello(): string {
+    canExit = Date.now();
     return 'Hello World!';
   }
 
