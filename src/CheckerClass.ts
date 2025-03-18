@@ -126,9 +126,7 @@ export class Checker {
         setInterval(async () => {
             this.count = this.count + 1
             this.connectToNewClients();
-            if (this.count % 12 == 1) {
-                await this.checkPings()
-            }
+            await this.checkPings();
         }, 30000)
     }
 
@@ -167,13 +165,13 @@ export class Checker {
                             await axios.get(client.repl);
                         } catch (e) {
                             await fetchWithTimeout(url, {}, 3)
-                            await fetchWithTimeout(`${ppplbot()}&text=${client.clientId} : Not responding | url = ${url}`);
+                            await fetchWithTimeout(`${ppplbot()}&text=${client.repl} : Not responding | url = ${url}`);
                         }
                     } else {
-                        await fetchWithTimeout(`${ppplbot()}&text=${client.clientId} : not responding - ${(Date.now() - client.lastPingTime) / 60000}`);
+                        await fetchWithTimeout(`${ppplbot()}&text=${client.repl} : not responding - ${(Date.now() - client.lastPingTime) / 60000}`);
                     }
                 } catch (error) {
-                    await fetchWithTimeout(`${ppplbot()}&text=${client.clientId} : Url not responding`);
+                    await fetchWithTimeout(`${ppplbot()}&text=${client.repl} : Url not responding`);
                     console.log("Some Error: ", parseError(error), error.code);
                 }
             }
@@ -181,50 +179,41 @@ export class Checker {
             if (client.downTime > 2) {
                 console.log(client.clientId, " - ", client.downTime)
             }
-            try {
-                await axios.get(`${client.repl}`, { timeout: 120000 });
-                this.clientsMap.set(client.clientId, { ...client, downTime: 0 });
-                console.log("Pinged :: ", client.repl)
-            } catch (e) {
-                parseError(e, "Error while pinging", false);
-                console.log(new Date(Date.now()).toLocaleString('en-IN', this.timeOptions), client.repl, ` NOT Reachable - ${client.downTime}`);
-                this.clientsMap.set(client.clientId, { ...client, downTime: client.downTime + 1 })
-                if (client.downTime > 5) {
-                    this.clientsMap.set(client.clientId, { ...client, downTime: -5 })
-                    try {
-                        const url = client.repl.includes('glitch') ? `${client.repl}/exit` : client.deployKey;
-                        const resp = await fetchWithTimeout(url, { timeout: 120000 });
-                        if (resp?.status == 200 || resp.status == 201) {
-                            await fetchWithTimeout(`${ppplbot()}&text=Restarted ${client.clientId}`);
-                        } else {
-                            console.log(`Failed to Restart ${client.clientId}`);
-                            await fetchWithTimeout(`${ppplbot()}&text=Failed to Restart ${client.clientId}`);
-                        }
-                    } catch (error) {
-                        console.log(`Failed to Restart ${client.clientId}`);
-                        await fetchWithTimeout(`${ppplbot()}&text=Failed to Restart ${client.clientId}`);
-                    }
-                }
-            }
-
-            // const userPromoteStats = await db.readSinglePromoteStats(val.clientId);
-            // if (userPromoteStats?.isActive && (Date.now() - userPromoteStats?.lastUpdatedTimeStamp) / (1000 * 60) > 12) {
-            //     try {
-            //         const resp = await axios.get(`${val.url}promote`, { timeout: 120000 });
-            //     } catch (error) {
-            //         console.log("Some Error: ", parseError(error), error.code);
+            // try {
+            //     await axios.get(`${client.repl}`, { timeout: 120000 });
+            //     this.clientsMap.set(client.clientId, { ...client, downTime: 0 });
+            //     console.log("Pinged :: ", client.repl)
+            // } catch (e) {
+            //     parseError(e, "Error while pinging", false);
+            //     console.log(new Date(Date.now()).toLocaleString('en-IN', this.timeOptions), client.repl, ` NOT Reachable - ${client.downTime}`);
+            //     this.clientsMap.set(client.clientId, { ...client, downTime: client.downTime + 1 })
+            //     if (client.downTime > 5) {
+            //         this.clientsMap.set(client.clientId, { ...client, downTime: -5 })
+            //         try {
+            //             const url = client.repl.includes('glitch') ? `${client.repl}/exit` : client.deployKey;
+            //             const resp = await fetchWithTimeout(url, { timeout: 120000 });
+            //             if (resp?.status == 200 || resp.status == 201) {
+            //                 await fetchWithTimeout(`${ppplbot()}&text=Restarted ${client.clientId}`);
+            //             } else {
+            //                 console.log(`Failed to Restart ${client.clientId}`);
+            //                 await fetchWithTimeout(`${ppplbot()}&text=Failed to Restart ${client.clientId}`);
+            //             }
+            //         } catch (error) {
+            //             console.log(`Failed to Restart ${client.clientId}`);
+            //             await fetchWithTimeout(`${ppplbot()}&text=Failed to Restart ${client.clientId}`);
+            //         }
             //     }
             // }
-            await sleep(10000)
+            await sleep(3000)
         }
-        if (!process.env.tgcms || !process.env.uptimebot || !process.env.uptimeChecker) {
-            await fetchWithTimeout(`${ppplbot()}&text=${process.env.tgcms} || ${process.env.uptimebot} || ${process.env.uptimeChecker} Evs does not exist! Exitting`);
-            process.exit(1)
-        }
+        // if (!process.env.tgcms || !process.env.uptimebot || !process.env.uptimeChecker) {
+        //     await fetchWithTimeout(`${ppplbot()}&text=${process.env.tgcms} || ${process.env.uptimebot} || ${process.env.uptimeChecker} Evs does not exist! Exitting`);
+        //     process.exit(1)
+        // }
 
-        await this.checkService(process.env.tgcms);
-        await this.checkService(process.env.uptimebot)
-        await this.checkService(process.env.uptimeChecker);
+        // await this.checkService(process.env.tgcms);
+        // await this.checkService(process.env.uptimebot)
+        // await this.checkService(process.env.uptimeChecker);
         // await this.checkService('https://mychatgpt-pg6w.onrender.com', `https://api.render.com/deploy/srv-cflkq853t39778sm0clg?key=e4QNTs9kDw4`)
     }
 
