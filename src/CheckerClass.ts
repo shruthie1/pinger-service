@@ -126,7 +126,9 @@ export class Checker {
         setInterval(async () => {
             this.count = this.count + 1
             this.connectToNewClients();
-            await this.checkPings();
+            if (this.count % 2 == 0) {
+                await this.checkPings();
+            }
         }, 30000)
     }
 
