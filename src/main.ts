@@ -76,7 +76,7 @@ bootstrap();
 process.on('unhandledRejection', (reason, promise) => {
   console.log('Unhandled Rejection at:', promise, 'reason:', reason);
   // Application specific logging, throwing an error, or other logic here
-  fetchWithTimeout(`${notifbot()}&text=Unhandled Promise Rejection ${JSON.stringify(reason)}`);
+  fetchWithTimeout(`${notifbot(process.env.accountsChannel)}&text=Unhandled Promise Rejection ${JSON.stringify(reason)}`);
 });
 
 process.on('uncaughtException', (error) => {

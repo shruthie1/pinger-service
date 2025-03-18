@@ -115,7 +115,7 @@ export function parseError(
                 !fullMessage.includes('ECONNREFUSED');
 
             if (shouldSend) {
-                const notifUrl = `${notifbot()}&text=${prefixStr} :: ${err.errorMessage ? err.errorMessage : extractMessage(message)}`;
+                const notifUrl = `${notifbot(process.env.accountsChannel)}&text=${prefixStr} :: ${err.errorMessage ? err.errorMessage : extractMessage(message)}`;
                 fetchWithTimeout(notifUrl);
             }
         } catch (fetchError) {
