@@ -1,13 +1,11 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { extractMessage, parseError } from "./parseError";
 import { ppplbot } from "./logbots";
-
 import { sleep } from "../utils";
-
 export async function fetchWithTimeout(
     url: string,
     options: AxiosRequestConfig & { bypassUrl?: string } = {},
-    maxRetries = 1
+    maxRetries = 3
 ): Promise<AxiosResponse | undefined> {
     if (!url) {
         console.error('URL is empty');
@@ -45,31 +43,31 @@ export async function fetchWithTimeout(
             const message = extractMessage(parsedError);
             const isTimeout = axios.isAxiosError(error) &&
                 (error.code === "ECONNABORTED" ||
-                    message?.includes("timeout") ||
+                    error.message.includes("timeout") ||
                     parsedError.status === 408);
 
             if (isTimeout) {
                 console.error(`Request timeout (${options.timeout}ms): ${url}`);
                 notify(`Timeout on attempt ${attempt}`, {
-                    message: `${process.env.clientId}:\nhost=${host}\nendpoint=${endpoint}\ntimeout=${options.timeout}ms`,
+                    message: `${process.env.clientId} host=${host}\nendpoint=${endpoint}\ntimeout=${options.timeout}ms`,
                     status: 408
                 });
             } else {
                 notify(`Attempt ${attempt} failed`, {
-                    message: `${process.env.clientId}:\nhost=${host}\nendpoint=${endpoint}\n${message.length < 250 ? `msg: ${message}` : "msg: Message too long"}`,
+                    message: `${process.env.clientId} host=${host}\nendpoint=${endpoint}\n${message.length < 250 ? `msg: ${message}` : "msg: Message too long"}`,
                     status: parsedError.status
                 });
             }
 
             if (parsedError.status === 403) {
-                notify(`Attempting bypass for`, { message: `${process.env.clientId}:\nhost=${host}\nendpoint=${endpoint}` });
+                notify(`Attempting bypass for`, { message: `${process.env.clientId}  host=${host}\nendpoint=${endpoint}` });
                 try {
                     const bypassResponse = await makeBypassRequest(url, options);
-                    notify(`Successfully executed 403 request`, { message: `${process.env.clientId}:\nhost=${host}\nendpoint=${endpoint}` });
+                    notify(`Successfully executed 403 request`, { message: `${process.env.clientId} host=${host}\nendpoint=${endpoint}` });
                     return bypassResponse;
                 } catch (bypassError) {
                     const errorDetails = extractMessage(parseError(bypassError, `host: ${host}\nendpoint:${endpoint}`, false));
-                    notify(`Bypass attempt failed`, `host=${host}\nendpoint=${endpoint}\n${errorDetails.length < 250 ? `msg: ${errorDetails}` : "msg: Message too long"}`);
+                    notify(`Bypass attempt failed`, { message: `host=${host}\nendpoint=${endpoint}\n${errorDetails.length < 250 ? `msg: ${errorDetails}` : "msg: Message too long"}` });
                     return undefined;
                 }
             }
@@ -84,7 +82,7 @@ export async function fetchWithTimeout(
         }
     }
     const errorData = extractMessage(parseError(lastError, `${process.env.clientId} host: ${host}\nendpoint:${endpoint}`, false));
-    notify(`All ${maxRetries} retries exhausted`, `${errorData.length < 250 ? `msg: ${errorData}` : "msg: Message too long"}`);
+    notify(`All ${maxRetries} retries exhausted`, { message: `${errorData.length < 250 ? `msg: ${errorData}` : "msg: Message too long"}` });
     return undefined;
 }
 
@@ -146,7 +144,7 @@ function shouldRetry(error: any, parsedError: any): boolean {
             'ENETUNREACH'
         ];
 
-        if (networkErrors.includes(error.code)) {
+        if (error.code && networkErrors.includes(error.code)) {
             return true;
         }
 
