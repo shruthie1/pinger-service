@@ -43,7 +43,7 @@ export async function fetchWithTimeout(
             const message = extractMessage(parsedError);
             const isTimeout = axios.isAxiosError(error) &&
                 (error.code === "ECONNABORTED" ||
-                    error.message.includes("timeout") ||
+                    message.includes("timeout") ||
                     parsedError.status === 408);
 
             if (isTimeout) {
