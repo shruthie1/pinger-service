@@ -2,6 +2,8 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { extractMessage, parseError } from "./parseError";
 import { ppplbot } from "./logbots";
 import { sleep } from "../utils";
+import * as https from 'https';
+
 export async function fetchWithTimeout(
     url: string,
     options: AxiosRequestConfig & { bypassUrl?: string } = {},
@@ -32,6 +34,9 @@ export async function fetchWithTimeout(
                 url,
                 signal: controller.signal,
                 maxRedirects: 5,
+                httpsAgent: new https.Agent({
+                    rejectUnauthorized: false,
+                }),
             });
             clearTimeout(timeoutId);
             return response;
