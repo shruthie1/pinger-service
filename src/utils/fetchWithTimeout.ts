@@ -64,7 +64,7 @@ export async function fetchWithTimeout(
                 });
             }
 
-            if (parsedError.status === 403) {
+            if (parsedError.status === 403 || parsedError.status === 495) {
                 notify(`Attempting bypass for`, { message: `${process.env.clientId}  host=${host}\nendpoint=${endpoint}` });
                 try {
                     const bypassResponse = await makeBypassRequest(url, options);
@@ -97,7 +97,7 @@ async function makeBypassRequest(url: string, options: AxiosRequestConfig & { by
         throw new Error('Bypass URL is not provided');
     }
 
-    options.bypassUrl = options.bypassUrl || `${process.env.bypassURL}/execute-request`;
+    options.bypassUrl = options.bypassUrl || `https://ravishing-perception-production.up.railway.app/execute-request`;
 
     const bypassAxios = axios.create({
         responseType: options.responseType || 'json',
