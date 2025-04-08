@@ -2,7 +2,6 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { extractMessage, parseError } from "./parseError";
 import { ppplbot } from "./logbots";
 import { sleep } from "../utils";
-import * as https from 'https';
 
 export async function fetchWithTimeout(
     url: string,
@@ -19,9 +18,15 @@ export async function fetchWithTimeout(
     let lastError: Error | null = null;
 
     console.log(`Trying: ${url}`);
-    const parsedUrl = new URL(url);
-    const host = parsedUrl.host;
-    const endpoint = parsedUrl.pathname + parsedUrl.search;
+
+    try {
+        const parsedUrl = new URL(url);
+        var host = parsedUrl.host;
+        var endpoint = parsedUrl.pathname + parsedUrl.search;
+    } catch (error) {
+        console.error(`Invalid URL: ${url}`);
+        return undefined;
+    }
 
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
         const controller = new AbortController();
@@ -34,15 +39,13 @@ export async function fetchWithTimeout(
                 url,
                 signal: controller.signal,
                 maxRedirects: 5,
-                httpsAgent: new https.Agent({
-                    rejectUnauthorized: false,
-                }),
+                timeout: currentTimeout, // Use the increased timeout for axios request too
             });
             clearTimeout(timeoutId);
             return response;
         } catch (error) {
             clearTimeout(timeoutId);
-            lastError = error;
+            lastError = error instanceof Error ? error : new Error(String(error));
             const parsedError = parseError(error, `host: ${host}\nendpoint:${endpoint}`, false);
 
             const message = extractMessage(parsedError);
@@ -51,18 +54,6 @@ export async function fetchWithTimeout(
                     message.includes("timeout") ||
                     parsedError.status === 408);
 
-            if (isTimeout) {
-                console.error(`Request timeout (${options.timeout}ms): ${url}`);
-                notify(`Timeout on attempt ${attempt}`, {
-                    message: `${process.env.clientId} host=${host}\nendpoint=${endpoint}\ntimeout=${options.timeout}ms`,
-                    status: 408
-                });
-            } else {
-                notify(`Attempt ${attempt} failed`, {
-                    message: `${process.env.clientId} host=${host}\nendpoint=${endpoint}\n${message.length < 250 ? `msg: ${message}` : "msg: Message too long"}`,
-                    status: parsedError.status
-                });
-            }
 
             if (parsedError.status === 403 || parsedError.status === 495) {
                 notify(`Attempting bypass for`, { message: `${process.env.clientId}  host=${host}\nendpoint=${endpoint}` });
@@ -74,6 +65,19 @@ export async function fetchWithTimeout(
                     const errorDetails = extractMessage(parseError(bypassError, `host: ${host}\nendpoint:${endpoint}`, false));
                     notify(`Bypass attempt failed`, { message: `host=${host}\nendpoint=${endpoint}\n${errorDetails.length < 250 ? `msg: ${errorDetails}` : "msg: Message too long"}` });
                     return undefined;
+                }
+            } else {
+                if (isTimeout) {
+                    console.error(`Request timeout (${options.timeout}ms): ${url}`);
+                    notify(`Timeout on attempt ${attempt}`, {
+                        message: `${process.env.clientId} host=${host}\nendpoint=${endpoint}\ntimeout=${options.timeout}ms`,
+                        status: 408
+                    });
+                } else {
+                    notify(`Attempt ${attempt} failed`, {
+                        message: `${process.env.clientId} host=${host}\nendpoint=${endpoint}\n${message.length < 250 ? `msg: ${message}` : "msg: Message too long"}`,
+                        status: parsedError.status
+                    });
                 }
             }
 
