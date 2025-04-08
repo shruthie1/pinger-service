@@ -56,7 +56,6 @@ export async function fetchWithTimeout(
 
 
             if (parsedError.status === 403 || parsedError.status === 495) {
-                notify(`Attempting bypass for`, { message: `${process.env.clientId}  host=${host}\nendpoint=${endpoint}` });
                 try {
                     const bypassResponse = await makeBypassRequest(url, options);
                     notify(`Successfully executed 403 request`, { message: `${process.env.clientId} host=${host}\nendpoint=${endpoint}` });
