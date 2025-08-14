@@ -3,6 +3,7 @@ import { sleep } from "./utils";
 import { fetchWithTimeout } from "./fetchWithTimeout";
 import { notifbot } from "./utils/logbots";
 import { parseError } from "./utils/parseError";
+import { BotConfig, ChannelCategory } from "./TelegramBots.config";
 console.log("IN Checker Class")
 export const prcessID = Math.floor(Math.random() * 1234);
 
@@ -50,38 +51,71 @@ export class Checker {
 
     static async setClients(clients: IClient[]) {
         Checker.getinstance();
+        console.debug("[setClients] Received clients:", JSON.stringify(clients, null, 2));
+        console.debug("[setClients] Existing clientsMap keys:", Array.from(this.instance.clientsMap.keys()));
+
         for (const client of clients) {
-            const clientId = client['clientId']
-            const existingData = this.instance.clientsMap.get(clientId)
+            const clientId = client['clientId'];
+            console.debug(`[setClients] Processing clientId: ${clientId}`, client);
+
+            const existingData = this.instance.clientsMap.get(clientId);
+
             if (existingData) {
-                this.instance.clientsMap.set(clientId, { ...existingData, ...clients[clientId] });
-                console.log(`Client ${clientId} already exists in clientsMap.`);
+                console.debug(`[setClients] Found existing data for clientId: ${clientId}`, existingData);
+                this.instance.clientsMap.set(clientId, { ...existingData, ...client });
+                console.log(`[setClients] Client ${clientId} already exists. Updated data merged.`);
             } else {
-                this.instance.clientsMap.set(clientId, { ...clients[clientId], downTime: 0, lastPingTime: Date.now() });
+                console.debug(`[setClients] No existing data for clientId: ${clientId}. Creating new entry.`);
+                this.instance.clientsMap.set(clientId, { ...client, downTime: 0, lastPingTime: Date.now() });
+                console.log(`[setClients] Client ${clientId} added to clientsMap.`);
             }
         }
-        console.log("Clients have been set successfully.");
+
+        console.log("[setClients] Final clientsMap size:", this.instance.clientsMap.size);
+        console.log("[setClients] Clients have been set successfully.");
     }
 
     async getClientOff(clientId: string, processId: string): Promise<boolean> {
+        console.debug(`[getClientOff] Invoked with clientId=${clientId}, processId=${processId}`);
+        console.debug(`[getClientOff] Current clientsMap keys:`, Array.from(this.clientsMap.keys()));
+
         const client = this.clientsMap.get(clientId);
+
         if (client) {
+            console.debug(`[getClientOff] Found client data for ${clientId}:`, client);
+
             try {
+                console.debug(`[getClientOff] Sending request to: ${client.repl}/getprocessid`);
+                const startTime = Date.now();
                 const connectResp = await fetchWithTimeout(`${client.repl}/getprocessid`, { timeout: 10000 });
+                const elapsed = Date.now() - startTime;
+                if (!connectResp) {
+                    BotConfig.getInstance().sendMessage(ChannelCategory.ACCOUNT_NOTIFICATIONS, `Error Fetching proccessID for ${clientId}`)
+                    return false
+                }
+                console.debug(`[getClientOff] Response received in ${elapsed}ms:`, connectResp.data);
+
                 if (connectResp.data.ProcessId === processId) {
+                    console.debug(`[getClientOff] ProcessId match for clientId=${clientId}. Updating downtime & lastPingTime.`);
                     this.clientsMap.set(clientId, { ...client, downTime: 0, lastPingTime: Date.now() });
+
+                    console.debug(`[getClientOff] Pushing to connection queue: clientId=${clientId}, processId=${processId}`);
                     this.pushToconnectionQueue(clientId, processId);
+
+                    console.log(`[getClientOff] Client ${clientId} verified and updated successfully.`);
                     return true;
                 } else {
-                    console.log(`Actual Process Id from ${client.repl}/getprocessid :: `, connectResp.data.ProcessId, " but received : ", processId);
-                    console.log("Request received from Unknown process");
+                    console.warn(`[getClientOff] ProcessId mismatch for ${clientId}. Expected=${processId}, Actual=${connectResp.data.ProcessId}`);
+                    console.warn(`[getClientOff] Request appears from an unknown process.`);
                     return false;
                 }
             } catch (error) {
-                parseError(error, "Some Error here:")
+                console.error(`[getClientOff] Error while connecting to ${client.repl}/getprocessid`);
+                parseError(error, `Error Fetching proccessID for ${clientId}:`);
             }
         } else {
-            console.log(new Date(Date.now()).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }), `Client ${clientId} Not exist`);
+            const ts = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+            console.warn(`[getClientOff] ${ts} - Client ${clientId} does not exist in clientsMap.`);
         }
     }
 
