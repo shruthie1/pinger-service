@@ -51,17 +51,17 @@ export class Checker {
 
     static async setClients(clients: IClient[]) {
         Checker.getinstance();
-        console.debug("[setClients] Received clients:", JSON.stringify(clients, null, 2));
+        // console.debug("[setClients] Received clients:", JSON.stringify(clients, null, 2));
         console.debug("[setClients] Existing clientsMap keys:", Array.from(this.instance.clientsMap.keys()));
 
         for (const client of clients) {
             const clientId = client['clientId'];
-            console.debug(`[setClients] Processing clientId: ${clientId}`, client);
+            // console.debug(`[setClients] Processing clientId: ${clientId}`, client);
 
             const existingData = this.instance.clientsMap.get(clientId);
 
             if (existingData) {
-                console.debug(`[setClients] Found existing data for clientId: ${clientId}`, existingData);
+                console.debug(`[setClients] Found existing data for clientId: ${clientId}`);
                 this.instance.clientsMap.set(clientId, { ...existingData, ...client });
                 console.log(`[setClients] Client ${clientId} already exists. Updated data merged.`);
             } else {
