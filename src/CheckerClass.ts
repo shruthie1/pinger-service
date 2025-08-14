@@ -77,13 +77,9 @@ export class Checker {
 
     async getClientOff(clientId: string, processId: string): Promise<boolean> {
         console.debug(`[getClientOff] Invoked with clientId=${clientId}, processId=${processId}`);
-        console.debug(`[getClientOff] Current clientsMap keys:`, Array.from(this.clientsMap.keys()));
-
         const client = this.clientsMap.get(clientId);
 
         if (client) {
-            console.debug(`[getClientOff] Found client data for ${clientId}:`, client);
-
             try {
                 console.debug(`[getClientOff] Sending request to: ${client.repl}/getprocessid`);
                 const startTime = Date.now();
