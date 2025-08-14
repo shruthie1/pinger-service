@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import { fetchWithTimeout } from './utils/fetchWithTimeout';
+import { fetchWithTimeout } from './fetchWithTimeout';
 import { notifbot } from './utils/logbots';
 import { parseError } from './utils/parseError';
 

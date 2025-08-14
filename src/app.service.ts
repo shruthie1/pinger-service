@@ -3,7 +3,7 @@ import axios from 'axios'
 import { uptimechecker } from './utils/constants';
 import { Checker } from './CheckerClass';
 import * as schedule from 'node-schedule-tz';
-import { fetchWithTimeout } from './utils/fetchWithTimeout';
+import { fetchWithTimeout } from './fetchWithTimeout';
 import { ppplbot } from './utils/logbots';
 import { parseError } from './utils/parseError';
 console.log("In App Service")
@@ -47,7 +47,7 @@ export class AppService implements OnModuleInit {
   async refreshClients() {
     console.log("Refreshing clients")
     try {
-      const response = await axios.get('https://api.npoint.io/f0d1e44d82893490bbde');
+      const response = await fetchWithTimeout('https://ums.paidgirl.site/maskedcls');
       await Checker.setClients(response.data)
     } catch (error) {
       parseError(error, "Error while refreshing Clients")
@@ -91,7 +91,7 @@ export class AppService implements OnModuleInit {
   async refreshUpiIds() {
     console.log("Refreshing Upi Ids")
     try {
-      const response = await axios.get(`https://api.npoint.io/54baf762fd873c55c6b1`);
+      const response = await axios.get(`https://ums.paidgirl.site/upi-ids`);
       this.upiIds = response.data
       return response.data
     } catch (error) {
