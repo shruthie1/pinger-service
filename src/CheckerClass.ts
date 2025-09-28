@@ -188,30 +188,30 @@ export class Checker {
 
     async checkPings() {
         console.log(`------------------------checkingPings: ${prcessID} :: ${this.count} :: ${this.clientsMap.size} -------------------------------------`)
-        for (const client of Array.from(this.clientsMap.values())) {
-            if ((Date.now() - this.pings[client.clientId]) > (5 * 60 * 1000) && (Date.now() - client.lastPingTime) > (5 * 60 * 1000)) {
-                try {
-                    if ((Date.now() - this.pings[client.clientId]) > (8 * 60 * 1000) && (Date.now() - client.lastPingTime) > (7 * 60 * 1000)) {
-                        const url = client.repl.includes('glitch') ? `${client.repl}/exit` : client.deployKey;
-                        console.log("trying url :", url)
-                        try {
-                            await axios.get(client.repl);
-                        } catch (e) {
-                            await fetchWithTimeout(url, {}, 3)
-                            await fetchWithTimeout(`${notifbot(process.env.accountsChannel)}&text=${client.repl} : Not responding | url = ${url}`);
-                        }
-                    } else {
-                        await fetchWithTimeout(`${notifbot(process.env.accountsChannel)}&text=${client.repl} : not responding - ${(Date.now() - client.lastPingTime) / 60000}`);
-                    }
-                } catch (error) {
-                    await fetchWithTimeout(`${notifbot(process.env.accountsChannel)}&text=${client.repl} : Url not responding`);
-                    console.log("Some Error: ", parseError(error), error.code);
-                }
-            }
+        //for (const client of Array.from(this.clientsMap.values())) {
+         //   if ((Date.now() - this.pings[client.clientId]) > (5 * 60 * 1000) && (Date.now() - client.lastPingTime) > (5 * 60 * 1000)) {
+        //        try {
+               //     if ((Date.now() - this.pings[client.clientId]) > (8 * 60 * 1000) && (Date.now() - client.lastPingTime) > (7 * 60 * 1000)) {
+                //        const url = client.repl.includes('glitch') ? `${client.repl}/exit` : client.deployKey;
+                      //  console.log("trying url :", url)
+                //        try {
+                         //   await axios.get(client.repl);
+                //        } catch (e) {
+                       //     await fetchWithTimeout(url, {}, 3)
+                       //     await fetchWithTimeout(`${notifbot(process.env.accountsChannel)}&text=${client.repl} : Not responding | url = ${url}`);
+              //          }
+              //      } else {
+               //         await fetchWithTimeout(`${notifbot(process.env.accountsChannel)}&text=${client.repl} : not responding - ${(Date.now() - client.lastPingTime) / 60000}`);
+              //      }
+          //      } catch (error) {
+          //          await fetchWithTimeout(`${notifbot(process.env.accountsChannel)}&text=${client.repl} : Url not responding`);
+           //         console.log("Some Error: ", parseError(error), error.code);
+            //    }
+          //  }
 
-            if (client.downTime > 2) {
-                console.log(client.clientId, " - ", client.downTime)
-            }
+      //      if (client.downTime > 2) {
+      //          console.log(client.clientId, " - ", client.downTime)
+      //      }
             // try {
             //     await axios.get(`${client.repl}`, { timeout: 120000 });
             //     this.clientsMap.set(client.clientId, { ...client, downTime: 0 });
@@ -237,8 +237,8 @@ export class Checker {
             //         }
             //     }
             // }
-            await sleep(3000)
-        }
+      //      await sleep(3000)
+       // }
         // if (!process.env.tgcms || !process.env.uptimebot || !process.env.uptimeChecker) {
         //     await fetchWithTimeout(`${notifbot(process.env.accountsChannel	)}&text=${process.env.tgcms} || ${process.env.uptimebot} || ${process.env.uptimeChecker} Evs does not exist! Exitting`);
         //     process.exit(1)
@@ -272,3 +272,4 @@ export class Checker {
         }
     }
 }
+
