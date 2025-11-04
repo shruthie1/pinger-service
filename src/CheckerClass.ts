@@ -1,4 +1,3 @@
-import axios from "axios";
 import { sleep } from "./utils";
 import { fetchWithTimeout } from "./fetchWithTimeout";
 import { notifbot } from "./utils/logbots";
@@ -253,15 +252,15 @@ export class Checker {
 
     async checkService(url: string, deployKey?: string) {
         try {
-            await axios.get(url, { timeout: 55000 });
+            await fetchWithTimeout(url, { timeout: 55000 });
             // console.log("Pinged :: ", url)
         } catch (e) {
             console.log(new Date(Date.now()).toLocaleString('en-IN', this.timeOptions), url, ` NOT Reachable`);
             await fetchWithTimeout(`${notifbot(process.env.accountsChannel)}&text=${url}  NOT Reachable`);
             try {
                 if (deployKey) {
-                    const resp = await axios.get(`${deployKey ? deployKey : `${url}/exit`}`, { timeout: 55000 });
-                    if (resp?.status == 200 || resp.status == 201) {
+                    const resp = await fetchWithTimeout(`${deployKey ? deployKey : `${url}/exit`}`, { timeout: 55000 });
+                    if (resp == undefined || resp.status != 200) {
                         await fetchWithTimeout(`${notifbot(process.env.accountsChannel)}&text=Restarted ${url}`);
                     }
                 }

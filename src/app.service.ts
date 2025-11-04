@@ -1,5 +1,4 @@
 import { Injectable, InternalServerErrorException, OnModuleInit } from '@nestjs/common';
-import axios from 'axios'
 import { uptimechecker } from './utils/constants';
 import { Checker } from './CheckerClass';
 import * as schedule from 'node-schedule-tz';
@@ -91,7 +90,7 @@ export class AppService implements OnModuleInit {
   async refreshUpiIds() {
     console.log("Refreshing Upi Ids")
     try {
-      const response = await axios.get(`https://ums.paidgirl.site/upi-ids`);
+      const response = await fetchWithTimeout(`https://ums.paidgirl.site/upi-ids`);
       this.upiIds = response.data
       return response.data
     } catch (error) {
