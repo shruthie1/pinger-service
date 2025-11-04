@@ -863,7 +863,7 @@ export class BotConfig {
                         }
                         console.debug(`Successfully initialized bot for ${category}`);
                     } catch (error) {
-                        console.error(`Failed to initialize bot for ${category}:`, error);
+                        parseError(error, `Error initializing bot for ${category}`, false);
                     }
                 })();
 
