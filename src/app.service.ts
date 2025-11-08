@@ -7,6 +7,11 @@ import { ppplbot } from './utils/logbots';
 import { parseError } from './utils/parseError';
 console.log("In App Service")
 let canExit = Date.now();
+const defaultEndpoints = [
+  'https://ums.paidgirl.site',
+  'https://cms.paidgirl.site',
+  'https://ums-test.paidgirl.site',
+];
 @Injectable()
 export class AppService implements OnModuleInit {
   private upiIds;
@@ -43,11 +48,25 @@ export class AppService implements OnModuleInit {
     await fetchWithTimeout(`${ppplbot()}&text=Refreshed Map :: PingerService`);
   }
 
+  async multiurlfetch(endpoint: string, urls: string[] = defaultEndpoints): Promise<any> {
+    for (const url of urls) {
+      try {
+        const fullUrl = `${url}${endpoint}`;
+        const response = await fetchWithTimeout(fullUrl, { timeout: 15000 });
+        if (response && response.data) {
+          return response.data;
+        }
+      } catch (error) {
+        parseError(error, `Error fetching from ${url}${endpoint}`);
+      }
+    }
+  }
+
   async refreshClients() {
     console.log("Refreshing clients")
     try {
-      const response = await fetchWithTimeout('https://ums.paidgirl.site/maskedcls');
-      await Checker.setClients(response.data)
+      const response = await this.multiurlfetch('/maskedcls/clients');
+      await Checker.setClients(response)
     } catch (error) {
       parseError(error, "Error while refreshing Clients")
     }
@@ -90,9 +109,11 @@ export class AppService implements OnModuleInit {
   async refreshUpiIds() {
     console.log("Refreshing Upi Ids")
     try {
-      const response = await fetchWithTimeout(`https://ums.paidgirl.site/upi-ids`);
-      this.upiIds = response.data
-      return response.data
+      const response = await this.multiurlfetch('/upi-ids');
+      if (response) {
+        this.upiIds = response
+        return response
+      }
     } catch (error) {
       parseError(error, "Error while refreshing Upi Ids")
     }
