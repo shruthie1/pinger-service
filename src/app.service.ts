@@ -105,7 +105,6 @@ export class AppService implements OnModuleInit {
   async getallupiIds() {
     return await this.upiIds;
   }
-
   async refreshUpiIds() {
     console.log("Refreshing Upi Ids")
     try {
