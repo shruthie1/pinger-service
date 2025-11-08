@@ -65,7 +65,7 @@ export class AppService implements OnModuleInit {
   async refreshClients() {
     console.log("Refreshing clients")
     try {
-      const response = await this.multiurlfetch('/maskedcls/clients');
+      const response = await this.multiurlfetch('/clients/maskedcls');
       await Checker.setClients(response)
     } catch (error) {
       parseError(error, "Error while refreshing Clients")
@@ -97,6 +97,7 @@ export class AppService implements OnModuleInit {
     const istHour = istTime.getUTCHours();
     return istHour;
   }
+  
   getHello(): string {
     canExit = Date.now();
     return 'Hello World!';
