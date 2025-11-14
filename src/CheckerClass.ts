@@ -244,6 +244,8 @@ export class Checker {
         // }
 
         await this.checkService("https://arpithared.onrender.com");
+                await this.checkService("https://a365-latest.onrender.com");
+
         // await this.checkService(process.env.uptimebot)
         // await this.checkService(process.env.uptimeChecker);
         // await this.checkService('https://mychatgpt-pg6w.onrender.com', `https://api.render.com/deploy/srv-cflkq853t39778sm0clg?key=e4QNTs9kDw4`)
@@ -271,4 +273,5 @@ export class Checker {
         }
     }
 }
+
 
